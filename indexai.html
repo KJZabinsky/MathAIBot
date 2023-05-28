@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -153,14 +152,35 @@
         const userMessage = createChatMessage(message, 'user');
         chatContent.appendChild(userMessage);
 
-        const botResponse = createChatMessage(getResponse(message), 'bot');
-        chatContent.appendChild(botResponse);
+        simulateTyping(function () {
+          const botResponse = createChatMessage(getResponse(message), 'bot');
+          chatContent.appendChild(botResponse);
 
-        userInput.value = '';
-        letterCount.textContent = 'Character Count: 0';
+          userInput.value = '';
+          letterCount.textContent = 'Character Count: 0';
 
-        chatContent.scrollTop = chatContent.scrollHeight;
+          chatContent.scrollTop = chatContent.scrollHeight;
+        });
       }
+    }
+
+    function simulateTyping(callback) {
+      const delay = 50;
+      const text = "MLP-BOT is typing...";
+      let index = 0;
+
+      const typingInterval = setInterval(function () {
+        userInput.setAttribute('disabled', true);
+        userInput.placeholder = text.substring(0, index) + '|';
+        index++;
+
+        if (index > text.length) {
+          clearInterval(typingInterval);
+          userInput.removeAttribute('disabled');
+          userInput.placeholder = 'Enter your message...';
+          callback();
+        }
+      }, delay);
     }
 
     function createChatMessage(message, sender) {
@@ -171,31 +191,59 @@
       return chatMessage;
     }
 
-function getResponse(message) {
-  if (/^(?:what is\s+)?[+\-*/\d\s()]+$/.test(message)) {
-    const equation = message.startsWith('what is') ? message.substring(8) : message; // Extract the equation from the input message
-    try {
-      if (equation.includes('0/0')) {
-        throw new Error('not possible');
+    function getResponse(message) {
+      if (/^(?:what is\s+)?[+\-*/\d\s()]+$/.test(message)) {
+        const equation = message.startsWith('what is') ? message.substring(8) : message; // Extract the equation from the input message
+        try {
+          if (equation.includes('0/0')) {
+            throw new Error('not possible');
+          }
+          const result = eval(equation);
+          return "The answer is: " + result;
+        } catch (error) {
+          if (error.message === 'not possible') {
+            return "Unfortunately, this is not possible. Imagine you have 0 cookies and you split them among 0 friends, see it does not make sense, and the cookie monster is sad because there are no cookies, and your friends are sad because they do not exist. Oh wow, that escalated quickly.";
+          }
+          return "Invalid arithmetic expression.";
+        }
+      } else if (message.toLowerCase().includes('hello') || message.toLowerCase().includes('hi')) {
+        return "Hello!";
+      } else if (message.toLowerCase().includes('thanks') || message.toLowerCase().includes('thank you')) {
+        return "You're welcome!";
+      } else if (message.toLowerCase().includes('define')) {
+        return defineTerm(message.toLowerCase());
+      } else {
+        return "I'm sorry, I don't have a response for that.";
       }
-      const result = eval(equation);
-      return "The answer is: " + result;
-    } catch (error) {
-      if (error.message === 'not possible') {
-        return "Unfortunately, this is not possible. Imagine you have 0 cookies and you split them among 0 friends, see it does not make sense, and the cookie monster is sad because there are no cookies, and your friends are sad because they do not exist. Oh wow, that escalated quickly.";
-      }
-      return "Invalid arithmetic expression.";
     }
-  } else if (message.toLowerCase().includes('hello') || message.toLowerCase().includes('hi')) {
-    return "Hello!";
-  } else if (message.toLowerCase().includes('thanks') || message.toLowerCase().includes('thank you')) {
-    return "You're welcome!";
-  } else {
-    return "I'm sorry, I don't have a response for that.";
-  }
-}
 
-
+    function defineTerm(message) {
+      if (message.includes('variable')) {
+        return "In mathematics, a variable is a symbol or letter used to represent a value that can vary or change in a mathematical expression or equation.";
+      } else if (message.includes('exponent')) {
+        return "In mathematics, an exponent is a small number placed to the right and above a base number to indicate how many times the base number should be multiplied by itself.";
+      } else if (message.includes('adding')) {
+        return "Adding is a basic arithmetic operation in mathematics that involves combining two or more numbers to find their sum.";
+      } else if (message.includes('subtracting')) {
+        return "Subtracting is a basic arithmetic operation in mathematics that involves finding the difference between two numbers.";
+      } else if (message.includes('multiplying')) {
+        return "Multiplying is a basic arithmetic operation in mathematics that involves finding the product of two or more numbers.";
+      } else if (message.includes('dividing')) {
+        return "Dividing is a basic arithmetic operation in mathematics that involves finding the quotient or result of dividing one number by another.";
+      } else if (message.includes('y=mx+b')) {
+        return "The equation y=mx+b represents a linear equation in two variables, where m represents the slope of the line, x represents the independent variable, y represents the dependent variable, and b represents the y-intercept (the point where the line crosses the y-axis).";
+      } else if (message.includes('decimals')) {
+        return "Decimals are a way to represent numbers that are not whole or integers. They are used to express numbers that have a fractional part.";
+      } else if (message.includes('average')) {
+        return "The average, also known as the mean, is a measure of central tendency in statistics. It is calculated by summing up all the values in a set and dividing the sum by the number of values.";
+      } else if (message.includes('percentage')) {
+        return "A percentage is a way to express a fraction or proportion as a number out of 100. It is often denoted using the percent sign (%).";
+      } else if (message.includes('linear equations')) {
+        return "A linear equation is an equation that represents a straight line when graphed on a coordinate plane. It can be written in the form Ax + By = C, where A, B, and C are constants, and x and y are variables.";
+      } else {
+        return "I'm sorry, I don't have a definition for that term.";
+      }
+    }
 
     function applyChatSettings() {
       const textElements = document.querySelectorAll('.bot-message, .user-message');
