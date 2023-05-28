@@ -8,9 +8,7 @@
       --bg-color: #f7f7f7;
       --bot-bg-color: #efefef;
       --user-bg-color: #d7f1e8;
-      --input-bg-color: white;
-      --input-text-color: #333;
-      --input-font-size: 14px;
+      --message-height: 120px;
     }
 
     body {
@@ -61,16 +59,14 @@
 
     textarea {
       width: 100%;
-      height: 60px;
+      height: var(--message-height);
       resize: none;
       padding: 10px;
       margin-top: 10px;
       border: 1px solid #ccc;
       border-radius: 4px;
       box-sizing: border-box;
-      font-size: var(--input-font-size);
-      background-color: var(--input-bg-color);
-      color: var(--input-text-color);
+      font-size: 14px;
     }
 
     button {
@@ -81,6 +77,10 @@
       color: white;
       border-radius: 4px;
       cursor: pointer;
+    }
+
+    #letter-count {
+      text-align: center;
     }
   </style>
 </head>
@@ -94,186 +94,99 @@
       <label for="text-color">Text Color:</label>
       <input type="color" id="text-color" value="#333">
 
-      <label for="bg-color">Background Color:</label>
-      <input type="color" id="bg-color" value="#f7f7f7">
-
-      <label for="input-bg-color">Input Background Color:</label>
-      <input type="color" id="input-bg-color" value="white">
-
-      <label for="input-text-color">Input Text Color:</label>
-      <input type="color" id="input-text-color" value="#333">
-
-      <label for="input-font-size">Input Text Size:</label>
-      <input type="number" id="input-font-size" min="10" max="30" value="14">
-
       <button onclick="applyChatSettings()">Apply Settings</button>
+      <button onclick="clearChat()">Clear Chat</button>
+      <button onclick="saveChatData()">Save Chat</button>
+      <button onclick="loadChatData()">Load Chat</button>
 
       <textarea id="user-input" placeholder="Enter your message..." autofocus></textarea>
-      <div id="message-info">Character count: 0</div>
+      <span id="letter-count">Character Count: 0</span>
       <button onclick="handleUserInput()">Submit</button>
-      <button onclick="clearChat()">Clear Chat</button>
-      <button onclick="saveChatData()">Save Chat Data</button>
-      <button onclick="loadChatData()">Load Chat Data</button>
     </div>
   </div>
 
   <script>
     const chatContent = document.getElementById('chat-content');
     const userInput = document.getElementById('user-input');
-    const messageInfo = document.getElementById('message-info');
+    const letterCount = document.getElementById('letter-count');
+    const textColorInput = document.getElementById('text-color');
 
-    userInput.addEventListener('input', function (e) {
-      const charCount = e.target.value.length;
-      messageInfo.textContent = 'Character count: ' + charCount;
+    userInput.addEventListener('input', function () {
+      letterCount.textContent = 'Character Count: ' + userInput.value.length;
     });
 
-    userInput.addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') {
+    userInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
         handleUserInput();
       }
     });
 
     function handleUserInput() {
       const message = userInput.value.trim();
+      if (message !== '') {
+        const userMessage = createChatMessage(message, 'user');
+        chatContent.appendChild(userMessage);
 
-      if (message === '') {
-        return;
+        const botResponse = createChatMessage(getResponse(message), 'bot');
+        chatContent.appendChild(botResponse);
+
+        userInput.value = '';
+        letterCount.textContent = 'Character Count: 0';
+
+        chatContent.scrollTop = chatContent.scrollHeight;
       }
-
-      const userMessage = createUserMessageElement(message);
-      chatContent.appendChild(userMessage);
-      scrollToBottom();
-
-      let response = getResponse(message);
-
-      const botMessage = createBotMessageElement(response);
-      chatContent.appendChild(botMessage);
-      scrollToBottom();
-
-      userInput.value = '';
-      messageInfo.textContent = 'Character count: 0';
     }
 
-    function createUserMessageElement(message) {
-      const userMessage = document.createElement('p');
-      userMessage.className = 'chat-message user-message';
-      userMessage.textContent = message;
-      return userMessage;
-    }
-
-    function createBotMessageElement(message) {
-      const botMessage = document.createElement('p');
-      botMessage.className = 'chat-message bot-message';
-      botMessage.textContent = 'AI Bot: ' + message;
-      return botMessage;
-    }
-
-    function scrollToBottom() {
-      chatContent.scrollTop = chatContent.scrollHeight;
+    function createChatMessage(message, sender) {
+      const chatMessage = document.createElement('p');
+      chatMessage.classList.add('chat-message');
+      chatMessage.classList.add(sender + '-message');
+      chatMessage.textContent = sender.toUpperCase() + ': ' + message;
+      return chatMessage;
     }
 
     function getResponse(message) {
-      if (message.toLowerCase().includes('hello') || message.toLowerCase().includes('hi')) {
-        return "Hello!";
-      } else if (message.toLowerCase().includes('thanks') || message.toLowerCase().includes('thank you')) {
-        return "You're welcome!";
-      } else if (message.toLowerCase().includes('what is your name')) {
-        return "My name is AI Bot.";
-      } else if (message.toLowerCase().includes('whoami')) {
-        const userName = prompt("What is your name?");
-        return "Your name is " + (userName || "unknown") + ".";
-      } else if (message.toLowerCase().includes('what is a variable')) {
-        return "In mathematics, a variable is a symbol or letter used to represent an unknown value or quantity.";
-      } else if (message.toLowerCase().includes('what does y=mx+b mean')) {
-        return "The equation y = mx + b represents a linear equation in the slope-intercept form, where:\n- m is the slope of the line\n- b is the y-intercept (the point where the line intersects the y-axis)\n- x and y are the variables representing the coordinates of any point on the line.";
-      } else if (message.match(/[+\-*/]|calculate|solve|what is/)) {
+      if (/^[+\-*/\d\s()]+$/.test(message)) {
         try {
           const result = eval(message);
           return "The answer is: " + result;
         } catch (error) {
-          return "Invalid math expression.";
+          return "Invalid arithmetic expression.";
         }
-      } else if (message.toLowerCase().includes('square root')) {
-        const number = parseInt(message.replace(/\D/g, ''));
-        if (!isNaN(number)) {
-          const sqrt = Math.sqrt(number);
-          return "The square root of " + number + " is " + sqrt;
-        } else {
-          return "Invalid input for square root calculation.";
-        }
-      } else if (message.toLowerCase().includes('power of')) {
-        const parts = message.split('power of');
-        if (parts.length === 2) {
-          const base = parseInt(parts[0].replace(/\D/g, ''));
-          const exponent = parseInt(parts[1].replace(/\D/g, ''));
-          if (!isNaN(base) && !isNaN(exponent)) {
-            const result = Math.pow(base, exponent);
-            return base + " raised to the power of " + exponent + " is " + result;
-          }
-        }
-        return "Invalid input for power calculation.";
-      } else if (message.toLowerCase().includes('what is an exponent')) {
-        return "An exponent represents the number of times a base number is multiplied by itself. It is denoted as a small raised number to the right of the base number. For example, in the expression 2^3, the base number is 2, and the exponent is 3. It means 2 multiplied by itself 3 times, which equals 8.";
-      } else if (message.toLowerCase().includes('what is an expression')) {
-        return "In mathematics, an expression is a combination of variables, constants, and mathematical operations (such as addition, subtraction, multiplication, and division) that can be evaluated to obtain a value. It can include numbers, symbols, and functions. For example, 2 + 3 is an expression that evaluates to 5.";
-      } else if (message.toLowerCase().includes('word related')) {
-        return "Word-related questions refer to queries about the meaning, usage, or definition of specific words or terms. If you have any word-related questions, feel free to ask!";
+      } else if (message.toLowerCase().includes('hello') || message.toLowerCase().includes('hi')) {
+        return "Hello!";
+      } else if (message.toLowerCase().includes('thanks') || message.toLowerCase().includes('thank you')) {
+        return "You're welcome!";
       } else {
-        return "I'm sorry, I don't understand. Can you please rephrase or ask a different question?";
+        return "I'm sorry, I don't have a response for that.";
       }
     }
 
     function applyChatSettings() {
-      const textColor = document.getElementById('text-color').value;
-      const bgColor = document.getElementById('bg-color').value;
-      const inputBgColor = document.getElementById('input-bg-color').value;
-      const inputTextColor = document.getElementById('input-text-color').value;
-      const inputFontSize = document.getElementById('input-font-size').value + 'px';
+      const textElements = document.querySelectorAll('.bot-message, .user-message');
+      const textColor = textColorInput.value;
 
-      document.documentElement.style.setProperty('--text-color', textColor);
-      document.documentElement.style.setProperty('--bg-color', bgColor);
-      document.documentElement.style.setProperty('--bot-bg-color', bgColor);
-      document.documentElement.style.setProperty('--user-bg-color', bgColor);
-      document.documentElement.style.setProperty('--input-bg-color', inputBgColor);
-      document.documentElement.style.setProperty('--input-text-color', inputTextColor);
-      document.documentElement.style.setProperty('--input-font-size', inputFontSize);
-
-      const chatContainer = document.querySelector('.chat-container');
-      const userInputContainer = document.querySelector('.user-input-container');
-      const chatMessages = document.getElementsByClassName('chat-message');
-
-      chatContainer.style.backgroundColor = bgColor;
-      userInputContainer.style.backgroundColor = inputBgColor;
-      userInputContainer.style.color = inputTextColor;
-      userInputContainer.style.fontSize = inputFontSize;
-      Array.from(chatMessages).forEach((message) => {
-        message.style.color = textColor;
+      textElements.forEach(function (element) {
+        element.style.color = textColor;
       });
-
-      scrollToBottom();
     }
 
     function clearChat() {
-      chatContent.innerHTML = '<p class="bot-message">AI Bot: Hi! How can I assist you today?</p>';
+      chatContent.innerHTML = '';
     }
 
     function saveChatData() {
-      const chatData = chatContent.innerHTML;
-      localStorage.setItem('chatData', chatData);
+      const chatMessages = chatContent.innerHTML;
+      localStorage.setItem('chatData', chatMessages);
+      alert('Chat data saved.');
     }
 
     function loadChatData() {
-      const chatData = localStorage.getItem('chatData');
-      if (chatData) {
-        chatContent.innerHTML = chatData;
-        scrollToBottom();
-      }
+      const chatMessages = localStorage.getItem('chatData');
+      chatContent.innerHTML = chatMessages;
+      alert('Chat data loaded.');
     }
-
-    window.addEventListener('load', function () {
-      loadChatData();
-      scrollToBottom();
-    });
   </script>
 </body>
 </html>
