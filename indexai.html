@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -170,28 +171,31 @@
       return chatMessage;
     }
 
-    function getResponse(message) {
-      if (/^[+\-*/\d\s()]+$/.test(message)) {
-        try {
-          if (message.includes('0/0')) {
-            throw new Error('not possible');
-          }
-          const result = eval(message);
-          return "Certainly! The answer is: " + result;
-        } catch (error) {
-          if (error.message === 'not possible') {
-            return "Unfortuanatly, this is not possible. Imagine you have 0 cookies and you split them among 0 friends, see it does not makes sense, and cookie monster is sad that there are no cookies, and your friends are sad because they do not exist. Oh wow, that escalated quickly.";
-          }
-          return "Invalid arithmetic expression.";
-        }
-      } else if (message.toLowerCase().includes('hello') || message.toLowerCase().includes('hi')) {
-        return "Hello!";
-      } else if (message.toLowerCase().includes('thanks') || message.toLowerCase().includes('thank you')) {
-        return "You're welcome!";
-      } else {
-        return "I'm sorry, I don't have a response for that.";
+function getResponse(message) {
+  if (/^(?:what is\s+)?[+\-*/\d\s()]+$/.test(message)) {
+    const equation = message.startsWith('what is') ? message.substring(8) : message; // Extract the equation from the input message
+    try {
+      if (equation.includes('0/0')) {
+        throw new Error('not possible');
       }
+      const result = eval(equation);
+      return "The answer is: " + result;
+    } catch (error) {
+      if (error.message === 'not possible') {
+        return "Unfortunately, this is not possible. Imagine you have 0 cookies and you split them among 0 friends, see it does not make sense, and the cookie monster is sad because there are no cookies, and your friends are sad because they do not exist. Oh wow, that escalated quickly.";
+      }
+      return "Invalid arithmetic expression.";
     }
+  } else if (message.toLowerCase().includes('hello') || message.toLowerCase().includes('hi')) {
+    return "Hello!";
+  } else if (message.toLowerCase().includes('thanks') || message.toLowerCase().includes('thank you')) {
+    return "You're welcome!";
+  } else {
+    return "I'm sorry, I don't have a response for that.";
+  }
+}
+
+
 
     function applyChatSettings() {
       const textElements = document.querySelectorAll('.bot-message, .user-message');
