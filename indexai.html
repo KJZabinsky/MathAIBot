@@ -3,29 +3,44 @@
 <head>
   <title>Answering Bot</title>
   <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
     .chat-container {
-      width: 400px;
-      margin: 0 auto;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
       padding: 20px;
       background-color: #f2f2f2;
-      border: 1px solid #ccc;
-      border-radius: 4px;
     }
-    
-    .chat-container p {
+
+    .chat-content {
+      flex-grow: 1;
+      width: 100%;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+
+    .chat-message {
       margin: 10px 0;
     }
-    
+
     .user-message {
       text-align: right;
-      color: #0b93f6;
+      color: var(--user-text-color, #0b93f6);
     }
-    
+
     .bot-message {
       text-align: left;
-      color: #4CAF50;
+      color: var(--bot-text-color, #4CAF50);
     }
-    
+
     input[type="text"] {
       width: 100%;
       padding: 10px;
@@ -33,105 +48,177 @@
       border: 1px solid #ccc;
       border-radius: 4px;
       box-sizing: border-box;
+      font-size: var(--input-font-size, 14px);
+    }
+
+    #settings-panel {
+      display: flex;
+      align-items: center;
+    }
+
+    #settings-panel label {
+      margin-right: 10px;
+    }
+
+    #settings-panel input[type="color"],
+    #settings-panel input[type="number"] {
+      margin-right: 5px;
     }
   </style>
 </head>
 <body>
   <div class="chat-container">
-    <p class="bot-message">AI Bot: Hi! How can I assist you today?</p>
+    <div class="chat-content" id="chat-content">
+      <p class="bot-message">AI Bot: Hi! How can I assist you today?</p>
+    </div>
+    <div id="settings-panel">
+      <label for="text-color">Text Color:</label>
+      <input type="color" id="text-color">
+      <label for="text-size">Text Size:</label>
+      <input type="number" id="text-size" min="10" max="30">
+    </div>
     <input type="text" id="user-input" placeholder="Enter your message...">
-  </div>
 
-  <script>
-    let userName = '';
+    <script>
+      let userName = '';
+      const chatContent = document.getElementById('chat-content');
 
-    // Function to handle user input and generate bot responses
-    function handleUserInput() {
-      const userInput = document.getElementById('user-input').value;
-      const chatContainer = document.querySelector('.chat-container');
+      // Function to handle user input and generate bot responses
+      function handleUserInput() {
+        const userInput = document.getElementById('user-input').value;
+        const userMessage = createUserMessageElement(userInput);
+        const chatContainer = document.querySelector('.chat-content');
 
-      // Create a new user message element
-      const userMessage = document.createElement('p');
-      userMessage.className = 'user-message';
-      userMessage.textContent = 'User: ' + userInput;
-      chatContainer.appendChild(userMessage);
+        chatContainer.appendChild(userMessage);
+        scrollToBottom();
 
-      // Generate bot response based on user input
-      let response = '';
-      if (userInput.toLowerCase().includes('hello') || userInput.toLowerCase().includes('hi')) {
-        response = "Hello!";
-      } else if (userInput.toLowerCase().includes('what is your name')) {
-        response = "My name is AI Bot.";
-      } else if (userInput.toLowerCase().includes('whoami')) {
-        if (userName === '') {
-          response = "I don't know your name. What's your name?";
-        } else {
-          response = "Your name is " + userName + ".";
-        }
-      } else if (userInput.toLowerCase().includes('name')) {
-        response = "I'm sorry, I cannot provide my name.";
-      } else if (userInput.toLowerCase().includes('what is a variable')) {
-        response = "In mathematics, a variable is a symbol or letter used to represent an unknown value or quantity.";
-      } else if (userInput.toLowerCase().includes('what does y=mx+b mean')) {
-        response = "The equation y = mx + b represents a linear equation in the slope-intercept form, where:\n- m is the slope of the line\n- b is the y-intercept (the point where the line intersects the y-axis)\n- x and y are the variables representing the coordinates of any point on the line.";
-      } else if (userInput.match(/[+\-*/]/)) {
-        try {
-          const result = eval(userInput);
-          response = "The answer is: " + result;
-        } catch (error) {
-          response = "Invalid math expression.";
-        }
-      } else if (userInput.toLowerCase().includes('square root')) {
-        const number = parseInt(userInput.replace(/\D/g, ''));
-        if (!isNaN(number)) {
-          const sqrt = Math.sqrt(number);
-          response = "The square root of " + number + " is " + sqrt;
-        } else {
-          response = "Invalid input for square root calculation.";
-        }
-      } else if (userInput.toLowerCase().includes('power of')) {
-        const parts = userInput.split('power of');
-        if (parts.length === 2) {
-          const base = parseInt(parts[0].replace(/\D/g, ''));
-          const exponent = parseInt(parts[1].replace(/\D/g, ''));
-          if (!isNaN(base) && !isNaN(exponent)) {
-            const result = Math.pow(base, exponent);
-            response = base + " raised to the power of " + exponent + " is " + result;
+        // Generate bot response based on user input
+        let response = '';
+        if (userInput.toLowerCase().includes('hello') || userInput.toLowerCase().includes('hi')) {
+          response = "Hello!";
+        } else if (userInput.toLowerCase().includes('thanks') || userInput.toLowerCase().includes('thank you')) {
+          response = "You're welcome!";
+        } else if (userInput.toLowerCase().includes('what is your name')) {
+          response = "My name is AI Bot.";
+        } else if (userInput.toLowerCase().includes('whoami')) {
+          if (userName === '') {
+            response = "I don't know your name. What's your name?";
+          } else {
+            response = "Your name is " + userName + ".";
+          }
+        } else if (userInput.toLowerCase().includes('name')) {
+          response = "I'm sorry, I cannot provide my name.";
+        } else if (userInput.toLowerCase().includes('what is a variable')) {
+          response = "In mathematics, a variable is a symbol or letter used to represent an unknown value or quantity.";
+        } else if (userInput.toLowerCase().includes('what does y=mx+b mean')) {
+          response = "The equation y = mx + b represents a linear equation in the slope-intercept form, where:\n- m is the slope of the line\n- b is the y-intercept (the point where the line intersects the y-axis)\n- x and y are the variables representing the coordinates of any point on the line.";
+        } else if (userInput.match(/[+\-*/]/)) {
+          try {
+            const result = eval(userInput);
+            response = "The answer is: " + result;
+          } catch (error) {
+            response = "Invalid math expression.";
+          }
+        } else if (userInput.toLowerCase().includes('square root')) {
+          const number = parseInt(userInput.replace(/\D/g, ''));
+          if (!isNaN(number)) {
+            const sqrt = Math.sqrt(number);
+            response = "The square root of " + number + " is " + sqrt;
+          } else {
+            response = "Invalid input for square root calculation.";
+          }
+        } else if (userInput.toLowerCase().includes('power of')) {
+          const parts = userInput.split('power of');
+          if (parts.length === 2) {
+            const base = parseInt(parts[0].replace(/\D/g, ''));
+            const exponent = parseInt(parts[1].replace(/\D/g, ''));
+            if (!isNaN(base) && !isNaN(exponent)) {
+              const result = Math.pow(base, exponent);
+              response = base + " raised to the power of " + exponent + " is " + result;
+            } else {
+              response = "Invalid input for power calculation.";
+            }
           } else {
             response = "Invalid input for power calculation.";
           }
+        } else if (userInput.toLowerCase().includes('word')) {
+          response = "A word is a unit of language that carries meaning.";
+        } else if (userInput.toLowerCase().includes('synonym')) {
+          response = "A synonym is a word or phrase that means exactly or nearly the same as another word or phrase.";
+        } else if (userInput.toLowerCase().includes('antonym')) {
+          response = "An antonym is a word that means the opposite of another word.";
         } else {
-          response = "Invalid input for power calculation.";
+          response = "I'm sorry, I cannot answer that.";
         }
-      } else if (userInput.toLowerCase().includes('word')) {
-        response = "A word is a unit of language that carries meaning.";
-      } else if (userInput.toLowerCase().includes('synonym')) {
-        response = "A synonym is a word or phrase that means exactly or nearly the same as another word or phrase.";
-      } else if (userInput.toLowerCase().includes('antonym')) {
-        response = "An antonym is a word that means the opposite of another word.";
-      } else {
-        response = "I'm sorry, I cannot answer that.";
+
+        const botMessage = createBotMessageElement(response);
+        chatContainer.appendChild(botMessage);
+        scrollToBottom();
+
+        document.getElementById('user-input').value = '';
       }
 
-      // Create a new bot message element
-      const botMessage = document.createElement('p');
-      botMessage.className = 'bot-message';
-      botMessage.textContent = 'AI Bot: ' + response;
-      chatContainer.appendChild(botMessage);
-
-      // Clear the input field
-      document.getElementById('user-input').value = '';
-
-      // Scroll to the bottom of the chat container
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
-
-    // Event listener for user input
-    document.getElementById('user-input').addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') {
-        handleUserInput();
+      // Function to create a user message element
+      function createUserMessageElement(message) {
+        const userMessage = document.createElement('p');
+        userMessage.className = 'chat-message user-message';
+        userMessage.textContent = 'User: ' + message;
+        return userMessage;
       }
-    });
-  </script>
+
+      // Function to create a bot message element
+      function createBotMessageElement(message) {
+        const botMessage = document.createElement('p');
+        botMessage.className = 'chat-message bot-message';
+        botMessage.textContent = 'AI Bot: ' + message;
+        return botMessage;
+      }
+
+      // Function to scroll to the bottom of the chat container
+      function scrollToBottom() {
+        chatContent.scrollTop = chatContent.scrollHeight;
+      }
+
+      // Event listener for user input
+      document.getElementById('user-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+          handleUserInput();
+        }
+      });
+
+      // Event listener for text color change
+      document.getElementById('text-color').addEventListener('change', function (e) {
+        const userInput = document.getElementById('user-input');
+        const botMessages = document.getElementsByClassName('bot-message');
+        const userMessages = document.getElementsByClassName('user-message');
+
+        const color = e.target.value;
+        document.documentElement.style.setProperty('--bot-text-color', color);
+        document.documentElement.style.setProperty('--user-text-color', color);
+
+        userInput.style.color = color;
+        Array.from(botMessages).forEach((message) => {
+          message.style.color = color;
+        });
+        Array.from(userMessages).forEach((message) => {
+          message.style.color = color;
+        });
+      });
+
+      // Event listener for text size change
+      document.getElementById('text-size').addEventListener('change', function (e) {
+        const userInput = document.getElementById('user-input');
+        const chatMessages = document.getElementsByClassName('chat-message');
+
+        const fontSize = e.target.value + 'px';
+        document.documentElement.style.setProperty('--input-font-size', fontSize);
+
+        userInput.style.fontSize = fontSize;
+        Array.from(chatMessages).forEach((message) => {
+          message.style.fontSize = fontSize;
+        });
+      });
+    </script>
+  </div>
 </body>
 </html>
