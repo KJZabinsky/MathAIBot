@@ -153,10 +153,17 @@
         const userMessage = createChatMessage(message, 'user');
         chatContent.appendChild(userMessage);
 
-        const botResponse = createChatMessage('', 'bot');
-        chatContent.appendChild(botResponse);
+        if (message.toLowerCase() === 'play snake game') {
+          const botResponse = createChatMessage('Okay sure', 'bot');
+          chatContent.appendChild(botResponse);
 
-        simulateTyping(getResponse(message), botResponse);
+          openGame();
+        } else {
+          const botResponse = createChatMessage('', 'bot');
+          chatContent.appendChild(botResponse);
+
+          simulateTyping(getResponse(message), botResponse);
+        }
 
         userInput.value = '';
         letterCount.textContent = 'Character Count: 0';
@@ -210,21 +217,16 @@
         return "In mathematics, a variable is a symbol or letter used to represent a value that can vary or change in a mathematical expression or equation.";
       } else if (containsTerm(message, 'exponent')) {
         return "In mathematics, an exponent is a small number placed to the right and above a base number to indicate how many times the base number should be multiplied by itself.";
-      } else if (containsTerm(message, 'adding')) {
-        return "Adding is a basic arithmetic operation in mathematics that involves combining two or more numbers to find their sum.";
-      } else if (containsTerm(message, 'subtracting')) {
-        return "Subtracting is a basic arithmetic operation in mathematics that involves taking one number away from another to find the difference.";
-      } else if (containsTerm(message, 'multiplying')) {
-        return "Multiplying is a basic arithmetic operation in mathematics that involves combining two or more numbers to find their product.";
-      } else if (containsTerm(message, 'dividing')) {
-        return "Dividing is a basic arithmetic operation in mathematics that involves splitting a number into equal parts or groups.";
+      } else if (containsTerm(message, 'square root')) {
+        return "In mathematics, the square root of a number is a value that, when multiplied by itself, gives the original number.";
       } else {
-        return "I'm sorry, I'm not sure how to respond to that. Can you please rephrase or ask a different question?";
+        return "I'm sorry, I don't have information on that topic.";
       }
     }
 
     function containsTerm(message, term) {
-      return message.toLowerCase().includes(term);
+      const regex = new RegExp(`\\b${term}\\b`, 'i');
+      return regex.test(message);
     }
 
     function applyChatSettings() {
@@ -244,8 +246,136 @@
 
     function loadChatData() {
       const chatData = localStorage.getItem('chatData');
-      chatContent.innerHTML = chatData;
-      alert('Chat loaded successfully!');
+      if (chatData) {
+        chatContent.innerHTML = chatData;
+        alert('Chat loaded successfully!');
+      } else {
+        alert('No chat data found!');
+      }
+    }
+
+    function openGame() {
+      chatContent.innerHTML += '<canvas id="snake-game" width="400" height="400"></canvas>';
+      const canvas = document.getElementById('snake-game');
+      const context = canvas.getContext('2d');
+
+      // Snake initial position
+      let snake = [
+        { x: 10, y: 10 },
+        { x: 9, y: 10 },
+        { x: 8, y: 10 },
+        { x: 7, y: 10 },
+      ];
+
+      let dx = 1;
+      let dy = 0;
+
+      // Apple initial position
+      let apple = { x: 15, y: 10 };
+
+      function clearCanvas() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      function drawSnake() {
+        snake.forEach(drawSnakePart);
+      }
+
+      function drawSnakePart(snakePart) {
+        context.fillStyle = 'green';
+        context.fillRect(snakePart.x * 20, snakePart.y * 20, 20, 20);
+        context.strokeStyle = 'darkgreen';
+        context.strokeRect(snakePart.x * 20, snakePart.y * 20, 20, 20);
+      }
+
+      function moveSnake() {
+        const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+        snake.unshift(head);
+
+        if (head.x === apple.x && head.y === apple.y) {
+          generateNewApple();
+        } else {
+          snake.pop();
+        }
+      }
+
+      function generateNewApple() {
+        apple.x = Math.floor(Math.random() * (canvas.width / 20));
+        apple.y = Math.floor(Math.random() * (canvas.height / 20));
+      }
+
+      function drawApple() {
+        context.fillStyle = 'red';
+        context.fillRect(apple.x * 20, apple.y * 20, 20, 20);
+        context.strokeStyle = 'darkred';
+        context.strokeRect(apple.x * 20, apple.y * 20, 20, 20);
+      }
+
+      function checkCollision() {
+        const head = snake[0];
+
+        if (
+          head.x < 0 ||
+          head.x >= canvas.width / 20 ||
+          head.y < 0 ||
+          head.y >= canvas.height / 20 ||
+          snake.some((part, index) => index !== 0 && part.x === head.x && part.y === head.y)
+        ) {
+          return true;
+        }
+
+        return false;
+      }
+
+      function changeDirection(event) {
+        const LEFT_KEY = 37;
+        const RIGHT_KEY = 39;
+        const UP_KEY = 38;
+        const DOWN_KEY = 40;
+
+        const keyPressed = event.keyCode;
+
+        if (keyPressed === LEFT_KEY && dx !== 1) {
+          dx = -1;
+          dy = 0;
+        }
+
+        if (keyPressed === RIGHT_KEY && dx !== -1) {
+          dx = 1;
+          dy = 0;
+        }
+
+        if (keyPressed === UP_KEY && dy !== 1) {
+          dx = 0;
+          dy = -1;
+        }
+
+        if (keyPressed === DOWN_KEY && dy !== -1) {
+          dx = 0;
+          dy = 1;
+        }
+      }
+
+      function gameLoop() {
+        if (checkCollision()) {
+          alert('Game Over!');
+          document.removeEventListener('keydown', changeDirection);
+          chatContent.removeChild(canvas);
+          return;
+        }
+
+        setTimeout(function () {
+          clearCanvas();
+          moveSnake();
+          drawApple();
+          drawSnake();
+          gameLoop();
+        }, 200);
+      }
+
+      gameLoop();
+
+      document.addEventListener('keydown', changeDirection);
     }
   </script>
 </body>
