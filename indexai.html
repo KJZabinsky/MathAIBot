@@ -49,6 +49,30 @@
       color: var(--text-color);
     }
 
+    .user-message::before,
+    .bot-message::before {
+      content: "";
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      margin-right: 10px;
+      background-color: currentColor;
+      border-radius: 50%;
+      animation: typing 1s infinite;
+    }
+
+    @keyframes typing {
+      0% {
+        opacity: 0.3;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0.3;
+      }
+    }
+
     .user-input-container {
       width: 300px;
       padding: 20px;
@@ -87,7 +111,7 @@
 <body>
   <div class="chat-container">
     <div class="chat-content" id="chat-content">
-      <p class="bot-message">AI Bot: Hi! How can I assist you today?</p>
+      <p class="bot-message">MLP-BOT: Hi! What do you need help with today?</p>
     </div>
     <div class="user-input-container">
       <h3>Chat Settings</h3>
@@ -101,7 +125,7 @@
 
       <textarea id="user-input" placeholder="Enter your message..." autofocus></textarea>
       <span id="letter-count">Character Count: 0</span>
-      <button onclick="handleUserInput()">Submit</button>
+      <button onclick="handleUserInput()">Send</button>
     </div>
   </div>
 
@@ -149,9 +173,15 @@
     function getResponse(message) {
       if (/^[+\-*/\d\s()]+$/.test(message)) {
         try {
+          if (message.includes('0/0')) {
+            throw new Error('not possible');
+          }
           const result = eval(message);
-          return "The answer is: " + result;
+          return "Certainly! The answer is: " + result;
         } catch (error) {
+          if (error.message === 'not possible') {
+            return "Unfortuanatly, this is not possible. Imagine you have 0 cookies and you split them among 0 friends, see it does not makes sense, and cookie monster is sad that there are no cookies, and your friends are sad because they do not exist. Oh wow, that escalated quickly.";
+          }
           return "Invalid arithmetic expression.";
         }
       } else if (message.toLowerCase().includes('hello') || message.toLowerCase().includes('hi')) {
