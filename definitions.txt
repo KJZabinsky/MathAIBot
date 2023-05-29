@@ -1,4 +1,43 @@
-Addition: Addition is the mathematical operation of combining two or more numbers to obtain a total or sum.
-Subtraction: Subtraction is the mathematical operation of finding the difference between two numbers or quantities.
-Multiplication: Multiplication is the mathematical operation of repeated addition or combining equal groups to find the total quantity.
-Division: Division is the mathematical operation of splitting a number or quantity into equal parts or groups.
+addition: The process of combining two or more numbers to find their total.
+subtraction: The process of taking one number away from another.
+multiplication: The process of repeated addition or counting in equal groups.
+division: The process of sharing or distributing a quantity into equal parts.
+integer: A whole number that can be either positive, negative, or zero.
+fraction: A number that represents a part of a whole.
+decimal: A number that includes a decimal point to represent a part of a whole or a fraction.
+percentage: A number or ratio expressed as a fraction of 100.
+exponent: A number that represents how many times a base number is multiplied by itself.
+radical: A symbol (√) used to represent the square root or higher roots of a number.
+equation: A mathematical statement that asserts the equality of two expressions.
+variable: A symbol or letter that represents an unknown or changing quantity in an equation.
+constant: A fixed value that does not change in an equation or mathematical expression.
+function: A rule that assigns a unique output value to each input value.
+graph: A visual representation of the relationship between variables or functions.
+slope: A measure of the steepness or incline of a line.
+coordinate: An ordered pair (x, y) representing a point on a graph.
+geometry: The branch of mathematics that deals with shapes, sizes, and properties of figures and spaces.
+triangle: A polygon with three sides and three angles.
+quadrilateral: A polygon with four sides and four angles.
+circle: A closed curve with all points equidistant from the center.
+radius: The distance from the center of a circle to any point on its circumference.
+diameter: The distance across a circle through its center.
+area: The measure of the amount of space enclosed by a two-dimensional shape.
+perimeter: The total distance around the boundary of a two-dimensional shape.
+volume: The measure of the amount of space enclosed by a three-dimensional shape.
+perpendicular lines: Lines that intersect at a right angle (90 degrees).
+congruent: Having the same size, shape, and measure.
+similar: Having the same shape, but not necessarily the same size or measure.
+median: The middle value in a set of numbers when they are listed in order.
+mean: The average of a set of numbers, calculated by adding them up and dividing by the total count.
+mode: The number or numbers that appear most frequently in a set.
+range: The difference between the highest and lowest values in a set of numbers.
+probability: The likelihood of an event occurring, usually expressed as a fraction, decimal, or percentage.
+statistics: The collection, analysis, interpretation, presentation, and organization of data.
+correlation: The statistical relationship between two or more variables.
+matrix: A rectangular array of numbers or symbols arranged in rows and columns.
+vector: A quantity that has both magnitude and direction.
+integral: A mathematical concept used to calculate areas, volumes, and accumulated quantities.
+differentiation: The process of finding the rate at which a function changes at each point.
+limit: The value that a function or sequence approaches as the input or index approaches a certain value.
+derivative: The rate of change of a function at a particular point.
+trigonometry: The branch of mathematics that deals with the relationships between the angles and sides of triangles.
