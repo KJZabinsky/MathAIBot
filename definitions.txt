@@ -1,7 +1,13 @@
 addition: The process of combining two or more numbers to find their total.
+adding: The process of combining two or more numbers to find their total.
+add: The process of combining two or more numbers to find their total.
 subtraction: The process of taking one number away from another.
+subtract: The process of taking one number away from another.
+remove: The process of taking one number away from another.
 multiplication: The process of repeated addition or counting in equal groups.
+multiply: The process of repeated addition or counting in equal groups.
 division: The process of sharing or distributing a quantity into equal parts.
+divide: The process of sharing or distributing a quantity into equal parts.
 integer: A whole number that can be either positive, negative, or zero.
 fraction: A number that represents a part of a whole.
 decimal: A number that includes a decimal point to represent a part of a whole or a fraction.
@@ -42,3 +48,4 @@ limit: The value that a function or sequence approaches as the input or index ap
 derivative: The rate of change of a function at a particular point.
 trigonometry: The branch of mathematics that deals with the relationships between the angles and sides of triangles.
 ratio: A ratio is a comparison between two or more quantities expressed as a fraction or a division.
+linear: In a linear context, the term "linear" refers to a relationship, process, or system that is characterized by a constant rate of change and follows a straight line.
