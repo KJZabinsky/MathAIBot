@@ -4,11 +4,12 @@
   <title>MLP-BOT-KJZ-HTML</title>
   <style>
     :root {
-      --text-color: #333;
-      --bg-color: #f7f7f7;
-      --bot-bg-color: #efefef;
-      --user-bg-color: #d7f1e8;
+      --text-color: #eee;
+      --bg-color: #111;
+      --bot-bg-color: #222;
+      --user-bg-color: #333;
       --message-height: 120px;
+      --button-border-color: #ccc;
     }
 
     body {
@@ -35,20 +36,17 @@
       margin: 10px 0;
       padding: 10px;
       border-radius: 5px;
-      max-width: 70%;
+      color: var(--text-color);
     }
 
     .user-message {
       text-align: right;
       background-color: var(--user-bg-color);
-      color: var(--text-color);
-      align-self: flex-end;
     }
 
     .bot-message {
       text-align: left;
       background-color: var(--bot-bg-color);
-      color: var(--text-color);
     }
 
     .user-message::before,
@@ -78,7 +76,7 @@
     .user-input-container {
       width: 300px;
       padding: 20px;
-      background-color: var(--bg-color);
+      background-color: var(--user-bg-color);
       display: flex;
       flex-direction: column;
     }
@@ -89,47 +87,92 @@
       resize: none;
       padding: 10px;
       margin-top: 10px;
-      border: 1px solid #ccc;
+      border: 1px solid var(--button-border-color);
       border-radius: 4px;
       box-sizing: border-box;
       font-size: 15px;
-      border-radius: 20px;
-      padding: 12px;
-      border-color: #ddd;
+      color: var(--text-color);
+      background-color: var(--user-bg-color);
     }
 
     button {
       padding: 10px;
       margin-top: 10px;
-      background-color: grey;
-      border: none;
-      color: white;
+      background-color: var(--user-bg-color);
+      border: 1px solid var(--button-border-color);
+      color: var(--text-color);
       border-radius: 4px;
       cursor: pointer;
     }
 
+    button[data-mode="light"] {
+      background-color: var(--bot-bg-color);
+      color: #fff;
+    }
+
     #letter-count {
       text-align: center;
+      color: var(--text-color);
+    }
+
+    body.light-mode {
+      --text-color: #111;
+      --bg-color: #eee;
+      --bot-bg-color: #ddd;
+      --user-bg-color: #ccc;
+      --button-border-color: #666;
+    }
+
+    body.light-mode .user-input-container {
+      background-color: var(--user-bg-color);
+    }
+
+    body.light-mode textarea {
+      color: var(--text-color);
+      background-color: var(--user-bg-color);
+      border: 1px solid var(--button-border-color);
+    }
+
+    body.light-mode button {
+      background-color: var(--user-bg-color);
+      color: var(--text-color);
+      border: 1px solid var(--button-border-color);
+    }
+
+    body.light-mode button[data-mode="light"] {
+      background-color: var(--bot-bg-color);
+      color: #fff;
+    }
+
+    body.light-mode .chat-message {
+      color: var(--text-color);
+    }
+
+    body.light-mode .user-message {
+      background-color: var(--user-bg-color);
+    }
+
+    body.light-mode .bot-message {
+      background-color: var(--bot-bg-color);
+    }
+
+    body.light-mode .user-message::before,
+    body.light-mode .bot-message::before {
+      background-color: currentColor;
     }
   </style>
 </head>
-<body>
+<body class="dark-mode">
   <div class="chat-container">
-    <div class="chat-content" id="chat-content">
-      <p class="bot-message chat-message">BOT: Hi! What do you need help with today?</p>
-    </div>
+    <div class="chat-content" id="chat-content"></div>
     <div class="user-input-container">
-      <h3>Chat Settings</h3>
-      <label for="text-color">Text Color:</label>
-      <input type="color" id="text-color" value="#333">
-
       <button onclick="applyChatSettings()">Apply Settings</button>
       <button onclick="clearChat()">Clear Chat</button>
       <button onclick="saveChatData()">Save Chat</button>
       <button onclick="loadChatData()">Load Chat</button>
 
       <textarea id="user-input" placeholder="Type your message here..."></textarea>
-      <button onclick="sendMessage()">Send</button>
+      <button id="dark-mode-button" data-mode="dark" onclick="toggleDarkMode()">Light Mode</button>
       <div id="letter-count"></div>
     </div>
   </div>
@@ -138,6 +181,7 @@
     const chatContent = document.getElementById('chat-content');
     const userInput = document.getElementById('user-input');
     const letterCount = document.getElementById('letter-count');
+
     let settings = {};
 
     function applyChatSettings() {
@@ -175,7 +219,7 @@
     function addMessage(message, className) {
       const messageElement = document.createElement('p');
       messageElement.textContent = message;
-      messageElement.className = className + ' chat-message';
+      messageElement.className = `chat-message ${className}`;
       chatContent.appendChild(messageElement);
       chatContent.scrollTop = chatContent.scrollHeight;
     }
@@ -194,47 +238,54 @@
       } else if (message.toLowerCase().includes('thanks') || message.toLowerCase().includes('thank you')) {
         return "You're welcome!";
       } else if (containsTerm(message, 'variable')) {
-        return "In mathematics, a variable is a symbol or letter used to represent a value that can vary or change in a mathematical expression or equation.";
-      } else if (containsTerm(message, 'exponent')) {
-        return "In mathematics, an exponent is a small number placed to the right and above a base number to indicate how many times the base number should be multiplied by itself.";
-      } else if (containsTerm(message, 'square root')) {
-        return "In mathematics, the square root of a number is a value that, when multiplied by itself, gives the original number.";
+        return "In mathematics, a variable is a symbol or letter used to represent a value that can vary.";
       } else {
-        return "I'm sorry, I don't have information on that topic.";
+        return "I'm sorry, I don't understand. Can you please rephrase your question?";
       }
-    }
-
-    function containsTerm(message, term) {
-      return message.toLowerCase().includes(term.toLowerCase());
     }
 
     function evaluateEquation(equation) {
-      let result;
+      return eval(equation);
+    }
 
-      try {
-        result = eval(equation); // Use the eval() function to evaluate the equation (Warning: Potential security risks with eval() - avoid using untrusted input)
-      } catch (error) {
-        throw new Error("Invalid arithmetic expression. Error: " + error.message);
+    function containsTerm(message, term) {
+      const regex = new RegExp(`\\b${term}\\b`, 'i');
+      return regex.test(message);
+    }
+
+    function toggleDarkMode() {
+      const body = document.body;
+      const darkModeButton = document.getElementById('dark-mode-button');
+      const mode = darkModeButton.dataset.mode;
+
+      if (mode === 'dark') {
+        body.classList.add('light-mode');
+        darkModeButton.textContent = 'Dark Mode';
+        darkModeButton.dataset.mode = 'light';
+        darkModeButton.style.backgroundColor = 'var(--bot-bg-color)';
+      } else {
+        body.classList.remove('light-mode');
+        darkModeButton.textContent = 'Light Mode';
+        darkModeButton.dataset.mode = 'dark';
+        darkModeButton.style.backgroundColor = 'var(--user-bg-color)';
       }
-
-      if (typeof result !== 'number') {
-        throw new Error("Invalid arithmetic expression. Result is not a number.");
-      }
-
-      return result;
     }
 
     userInput.addEventListener('input', function () {
-      const characterCount = userInput.value.length;
-      letterCount.textContent = characterCount + '/500';
+      const letterCountText = userInput.value.length + ' characters';
+      letterCount.textContent = letterCountText;
     });
 
     userInput.addEventListener('keydown', function (event) {
-      if (event.key === 'Enter') {
-        event.preventDefault(); // Prevent the default behavior of Enter key
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
         sendMessage();
       }
     });
+
+    window.onload = function () {
+      addMessage("Hi! What do you need help with today?", 'bot-message');
+    };
   </script>
 </body>
 </html>
