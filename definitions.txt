@@ -41,3 +41,4 @@ differentiation: The process of finding the rate at which a function changes at 
 limit: The value that a function or sequence approaches as the input or index approaches a certain value.
 derivative: The rate of change of a function at a particular point.
 trigonometry: The branch of mathematics that deals with the relationships between the angles and sides of triangles.
+ratio: A ratio is a comparison between two or more quantities expressed as a fraction or a division.
