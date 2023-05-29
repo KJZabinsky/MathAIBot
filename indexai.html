@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -61,17 +62,42 @@
       animation: typing 1s infinite;
     }
 
-    @keyframes typing {
-      0% {
-        opacity: 0.5;
-      }
-      50% {
-        opacity: 1;
-      }
-       100% {
-        opacity: 0.5;
-      }
+	.typing::after {
+	  content: '';
+	  display: inline-block;
+	  width: 8px;
+	  height: 16px;
+	  background-color: var(--text-color);
+	  animation: typing 1s infinite;
+	}
+
+	@keyframes typing {
+  	0% {
+  	  opacity: 0.2;
+ 	   transform: translateY(0);
+ 	 }
+ 	 50% {
+ 	   opacity: 0.5;
+ 	   transform: translateY(-4px);
     }
+  	  100% {
+  	  opacity: 0.2;
+  	  transform: translateY(0);
+  }
+}
+
+
+.typing::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 10px;
+  background-color: currentColor;
+  border-radius: 50%;
+  animation: typing 1s infinite;
+}
+
 
     .user-input-container {
       width: 300px;
@@ -148,10 +174,9 @@
 <body class="dark-mode">
   <div class="chat-container">
     <div class="chat-content" id="chat-content">
-      <p class="chat-message bot-message">Welcome! I'm here to assist you with math-related questions. Feel free to ask me anything related to Math!</p>
+      <p class="chat-message bot-message">Welcome! I'm here to assist you with math-related questions. Feel free to ask me to solve or define!</p>
     </div>
     <div class="user-input-container">
-      <button onclick="applyChatSettings()">Apply Settings</button>
       <button onclick="clearChat()">Clear Chat</button>
       <button onclick="saveChatData()">Save Chat</button>
       <button onclick="loadChatData()">Load Chat</button>
@@ -167,136 +192,130 @@
     </div>
   </div>
 
-<script>
-  const chatContent = document.getElementById('chat-content');
-  const userInput = document.getElementById('user-input');
-  const letterCount = document.getElementById('letter-count');
+  <script>
+    const chatContent = document.getElementById('chat-content');
+    const userInput = document.getElementById('user-input');
+    const letterCount = document.getElementById('letter-count');
 
-  let settings = {};
+    let definitions = {};
 
-  function applyChatSettings() {
-    const textColor = document.getElementById('text-color').value;
-    settings.textColor = textColor;
+    fetch('https://raw.githubusercontent.com/KJZabinsky/MathAIBot/main/definitions.txt')
+      .then(response => response.text())
+      .then(data => {
+        const lines = data.split('\n');
+        lines.forEach(line => {
+          const [word, definition] = line.split(':');
+          definitions[word.trim()] = definition.trim();
+        });
+      })
+      .catch(error => console.error('Error fetching definitions:', error));
 
-    chatContent.style.setProperty('--text-color', textColor);
-  }
+    function applyChatSettings() {
+      const textColor = document.getElementById('text-color').value;
+      settings.textColor = textColor;
 
-  function clearChat() {
-    chatContent.innerHTML = '';
-  }
-
-  function saveChatData() {
-    const chatData = chatContent.innerHTML;
-    localStorage.setItem('chatData', chatData);
-  }
-
-  function loadChatData() {
-    const chatData = localStorage.getItem('chatData');
-    chatContent.innerHTML = chatData;
-  }
-
-  function sendMessage() {
-    const message = userInput.value.trim();
-
-    if (message !== '') {
-      addMessage("Equation: " + message, 'user-message');
-      const response = getResponse(message);
-      addMessage(response, 'bot-message');
-      userInput.value = '';
+      chatContent.style.setProperty('--text-color', textColor);
     }
-  }
 
-  function addMessage(message, className) {
-    const messageElement = document.createElement('p');
-    messageElement.textContent = message;
-    messageElement.className = `chat-message ${className}`;
-    chatContent.appendChild(messageElement);
-    chatContent.scrollTop = chatContent.scrollHeight;
-  }
-
-  function getResponse(message) {
-    if (/^(?:what is\s+)?[+\-*/\d\s().]+$/.test(message)) {
-      const result = evaluateEquation(message);
-      return "Result: " + result;
-    } else if (message.toLowerCase().includes('hello') || message.toLowerCase().includes('hi')) {
-      return "Hello!";
-    } else if (message.toLowerCase().includes('thanks') || message.toLowerCase().includes('thank you')) {
-      return "You're welcome!";
-    } else if (fetchDefinitionFromFile(message)) {
-      return fetchDefinitionFromFile(message);
-    } else {
-      return "I'm sorry, I don't understand. Could you please rephrase your question?";
+    function clearChat() {
+      chatContent.innerHTML = '';
     }
-  }
 
-  function evaluateEquation(equation) {
-    try {
-      const result = eval(equation);
-      return result;
-    } catch (error) {
-      return "Invalid equation. Please check your input.";
+    function saveChatData() {
+      const chatData = chatContent.innerHTML;
+      localStorage.setItem('chatData', chatData);
     }
-  }
 
-  function containsTerm(message, term) {
-    return message.toLowerCase().includes(term.toLowerCase());
-  }
-
-  function fetchDefinitionFromFile(word) {
-    const definitions = {
-      abacus: "An early counting tool used for basic arithmetic.",
-      "Absolute Value": "Always a positive number, absolute value refers to the distance of a number from 0.",
-      "Acute Angle": "An angle whose measure is between 0° and 90° or with less than 90° or pi/2 radians.",
-      addend: "A number involved in an addition problem; numbers being added are called addends.",
-      algebra: "The branch of mathematics that substitutes letters for numbers to solve for unknown values.",
-      algorithm: "A procedure or set of steps used to solve a mathematical computation.",
-      angle: "The figure formed by two rays sharing a common endpoint.",
-      "Angle Bisector": "A line or ray that divides an angle into two congruent angles.",
-      area: "The measure of the amount of space inside a two-dimensional figure.",
-      variable: "A symbol used to represent a quantity that can vary or change in a mathematical expression or equation.",
-      coefficient: "A number multiplied by a variable in an algebraic term.",
-      congruent: "Having the same size and shape; two figures are congruent if they are identical after translation, rotation, and/or reflection.",
-      cylinder: "A three-dimensional geometric shape with two parallel circular bases and a curved surface connecting the bases.",
-      decimal: "A number with a decimal point used to represent a part of a whole.",
-      diameter: "The distance across a circle passing through the center; it is twice the length of the radius.",
-      equation: "A mathematical statement that states two expressions are equal.",
-      exponent: "A number that indicates how many times a base number is multiplied by itself.",
-      fraction: "A number that represents a part of a whole or a division of quantities.",
-      geometry: "The branch of mathematics that deals with the properties, measurements, and relationships of points, lines, angles, and figures in space.",
-      hypotenuse: "The side opposite the right angle in a right triangle; it is the longest side.",
-      integer: "A whole number that can be positive, negative, or zero."
-    };
-
-    return definitions[word];
-  }
-
-  function toggleDarkMode() {
-    const darkModeButton = document.getElementById('dark-mode-button');
-    const currentMode = darkModeButton.dataset.mode;
-
-    if (currentMode === 'dark') {
-      document.body.classList.remove('dark-mode');
-      darkModeButton.textContent = 'Dark Mode';
-      darkModeButton.dataset.mode = 'light';
-    } else {
-      document.body.classList.add('dark-mode');
-      darkModeButton.textContent = 'Light Mode';
-      darkModeButton.dataset.mode = 'dark';
+    function loadChatData() {
+      const chatData = localStorage.getItem('chatData');
+      chatContent.innerHTML = chatData;
     }
-  }
 
-  userInput.addEventListener('input', function () {
-    const inputLength = userInput.value.length;
-    letterCount.textContent = "Characters: " + inputLength;
-  });
+    function sendMessage() {
+      const message = userInput.value.trim();
 
-  userInput.addEventListener('keydown', function (event) {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      sendMessage();
+      if (message !== '') {
+        addMessage("Equation: " + message, 'user-message');
+        const response = getResponse(message);
+        addMessage(response, 'bot-message');
+        userInput.value = '';
+      }
     }
-  });
-</script>
+
+    function addMessage(message, className) {
+      const messageElement = document.createElement('p');
+      messageElement.className = `chat-message ${className}`;
+
+      if (className === 'user-message') {
+        messageElement.textContent = message;
+      } else if (className === 'bot-message') {
+        const typingElement = document.createElement('span');
+        typingElement.className = 'typing';
+        messageElement.textContent = 'MathBot: ';
+        messageElement.appendChild(typingElement);
+
+        setTimeout(function () {
+          typingElement.remove();
+          const textNode = document.createTextNode(message);
+          messageElement.appendChild(textNode);
+        }, 1000);
+      }
+
+      chatContent.appendChild(messageElement);
+      chatContent.scrollTop = chatContent.scrollHeight;
+    }
+
+    function getResponse(message) {
+      if (/^(?:what is\s+)?[+\-*/\d\s().]+$/.test(message)) {
+        const result = evaluateEquation(message);
+        return "Result: " + result;
+      } else if (containsTerm(message, 'hello') || containsTerm(message, 'hi')) {
+        return "Hello!";
+      } else if (containsTerm(message, 'thanks') || containsTerm(message, 'thank you')) {
+        return "You're welcome!";
+      } else if (fetchDefinitionFromFile(message)) {
+        return fetchDefinitionFromFile(message);
+      } else {
+        return "I'm sorry, I don't understand. Could you please rephrase your question?";
+      }
+    }
+
+    function evaluateEquation(equation) {
+      try {
+        const result = eval(equation);
+        return result;
+      } catch (error) {
+        console.error('Error evaluating equation:', error);
+        return "Invalid equation!";
+      }
+    }
+
+    function containsTerm(message, term) {
+      return message.toLowerCase().includes(term.toLowerCase());
+    }
+
+    function fetchDefinitionFromFile(word) {
+      return definitions[word];
+    }
+
+    function toggleDarkMode() {
+      const body = document.body;
+      body.classList.toggle('dark-mode');
+    }
+
+    userInput.addEventListener('input', function () {
+      const message = userInput.value;
+      const count = message.length;
+      letterCount.textContent = count + '/100';
+    });
+
+    userInput.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    });
+  </script>
 
 </body>
 </html>
