@@ -148,7 +148,7 @@
 <body class="dark-mode">
   <div class="chat-container">
     <div class="chat-content" id="chat-content">
-      <p class="chat-message bot-message">Welcome! I'm here to assist you with math-related questions. Feel free to ask me anything!</p>
+      <p class="chat-message bot-message">Welcome! I'm here to assist you with math-related questions. Feel free to ask me anything related to Math!</p>
     </div>
     <div class="user-input-container">
       <button onclick="applyChatSettings()">Apply Settings</button>
@@ -158,8 +158,12 @@
 
       <textarea id="user-input" placeholder="Type your message here..."></textarea>
       <button id="submit-button" onclick="sendMessage()">Send</button>
-      <button id="dark-mode-button" data-mode="dark" onclick="toggleDarkMode()">Light Mode</button>
+     <br>
       <div id="letter-count"></div>
+      <br>
+      <center><h3 style="color: white;">© KJ Zabinsky<h3>
+      <h6 style="color: white;">No API Key<h6>
+      <h6 style="color: white;">Unknown Version<h6>
     </div>
   </div>
 
@@ -283,7 +287,7 @@
 
   userInput.addEventListener('input', function () {
     const inputLength = userInput.value.length;
-    letterCount.textContent = inputLength + "/500";
+    letterCount.textContent = "Characters: " + inputLength;
   });
 
   userInput.addEventListener('keydown', function (event) {
