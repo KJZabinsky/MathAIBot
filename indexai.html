@@ -4,11 +4,11 @@
   <title>MLP-BOT-KJZ-HTML</title>
   <style>
     :root {
-      --text-color: #eee;
+      --text-color: white;
       --bg-color: #111;
       --bot-bg-color: #222;
       --user-bg-color: #333;
-      --message-height: 120px;
+      --message-height: 30%;
       --button-border-color: #ccc;
     }
 
@@ -63,13 +63,13 @@
 
     @keyframes typing {
       0% {
-        opacity: 0.3;
+        opacity: 0.5;
       }
       50% {
         opacity: 1;
       }
       100% {
-        opacity: 0.3;
+        opacity: 0.5;
       }
     }
 
@@ -116,7 +116,7 @@
     }
 
     body.light-mode {
-      --text-color: #111;
+      --text-color: black;
       --bg-color: #eee;
       --bot-bg-color: #ddd;
       --user-bg-color: #ccc;
@@ -143,23 +143,6 @@
       background-color: var(--bot-bg-color);
       color: #fff;
     }
-
-    body.light-mode .chat-message {
-      color: var(--text-color);
-    }
-
-    body.light-mode .user-message {
-      background-color: var(--user-bg-color);
-    }
-
-    body.light-mode .bot-message {
-      background-color: var(--bot-bg-color);
-    }
-
-    body.light-mode .user-message::before,
-    body.light-mode .bot-message::before {
-      background-color: currentColor;
-    }
   </style>
 </head>
 <body class="dark-mode">
@@ -172,6 +155,7 @@
       <button onclick="loadChatData()">Load Chat</button>
 
       <textarea id="user-input" placeholder="Type your message here..."></textarea>
+      <button id="submit-button" onclick="sendMessage()">Send</button>
       <button id="dark-mode-button" data-mode="dark" onclick="toggleDarkMode()">Light Mode</button>
       <div id="letter-count"></div>
     </div>
@@ -209,7 +193,7 @@
       const message = userInput.value.trim();
 
       if (message !== '') {
-        addMessage(message, 'user-message');
+        addMessage("Equation: " + message, 'user-message');
         const response = getResponse(message);
         addMessage(response, 'bot-message');
         userInput.value = '';
@@ -229,7 +213,7 @@
         const equation = message.startsWith('what is') ? message.substring(8) : message; // Extract the equation from the input message
         try {
           const result = evaluateEquation(equation); // Evaluate the mathematical expression
-          return "The answer is: " + result;
+          return "Equation: " + equation + "\nAnswer: " + result;
         } catch (error) {
           return "Invalid arithmetic expression. Error: " + error.message;
         }
@@ -238,7 +222,7 @@
       } else if (message.toLowerCase().includes('thanks') || message.toLowerCase().includes('thank you')) {
         return "You're welcome!";
       } else if (containsTerm(message, 'variable')) {
-        return "In mathematics, a variable is a symbol or letter used to represent a value that can vary.";
+        return "In mathematics, a variable is a symbol or letter used to represent a value that can vary. A variable is simply a letter or word that holds a value.";
       } else {
         return "I'm sorry, I don't understand. Can you please rephrase your question?";
       }
@@ -284,7 +268,8 @@
     });
 
     window.onload = function () {
-      addMessage("Hi! What do you need help with today?", 'bot-message');
+      addMessage("Hello, What can I help you with today?", 'bot-message');
+      addMessage("I can solve many math equasions, define math term definitions, and much more.", 'bot-message');
     };
   </script>
 </body>
