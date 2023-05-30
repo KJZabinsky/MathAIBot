@@ -1,3 +1,4 @@
+lol: ;) Im totally laughing LOL.
 addition: The process of combining two or more numbers to find their total.
 adding: The process of combining two or more numbers to find their total.
 add: The process of combining two or more numbers to find their total.
@@ -49,3 +50,17 @@ derivative: The rate of change of a function at a particular point.
 trigonometry: The branch of mathematics that deals with the relationships between the angles and sides of triangles.
 ratio: A ratio is a comparison between two or more quantities expressed as a fraction or a division.
 linear: In a linear context, the term "linear" refers to a relationship, process, or system that is characterized by a constant rate of change and follows a straight line.
+line: A line is a one-dimensional figure, which has length but no width.
+ray: any of a set of straight lines passing through one point.
+circumference: The complete distance around a circle or a square.
+chord: A segment joining two points on a circle.
+evaluate: This word means "To calculate the numerical value".
+finite: Not infinite; has no end.
+formula: A rule that numerically describes the relationship between two or more variables.
+inequality: A mathematical equasion expressing inequality and containing a greater than, less than, or not equal to symbol.
+logic: Sound reasoning and the formal laws of reasoning.
+norm: The mean or average; an established pattern or form.
+reflection: The mirror image of a shape or object, obtained from flipping the shape on an axis.
+symmetry: Two halves that match perfectly and are identical across an axis.
+weight: The measure of how heavy something is.
+yard: A unit of measure that is equal to approximately 91.5 centimeters or 3 feet.
