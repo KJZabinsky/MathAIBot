@@ -2,6 +2,7 @@ lol: ;) Im totally laughing LOL.
 bruh: Why do you call me that? Just called me nothing.
 sup: Sup.
 math: Mathematics, the science of structure, order, and relation that has evolved from elemental practices of counting, measuring, and describing the shapes of objects. It deals with logical reasoning and quantitative calculation, and its development has involved an increasing degree of idealization and abstraction of its subject matter.
+secretcode: 01001001 00100000 01110011 01110100 01101001 01101100 01101100 00100000 01101100 01101001 01101011 01100101 00100000 01100010 01110010 01100101.
 addition: The process of combining two or more numbers to find their total.
 adding: The process of combining two or more numbers to find their total.
 add: The process of combining two or more numbers to find their total.
