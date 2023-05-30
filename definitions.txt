@@ -70,3 +70,4 @@ reflection: The mirror image of a shape or object, obtained from flipping the sh
 symmetry: Two halves that match perfectly and are identical across an axis.
 weight: The measure of how heavy something is.
 yard: A unit of measure that is equal to approximately 91.5 centimeters or 3 feet.
+coeficient: a numerical or constant quantity placed before and multiplying the variable in an algebraic expression.
