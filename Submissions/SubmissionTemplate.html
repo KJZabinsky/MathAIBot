@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MATH BOT TEMPLATE</title>
+  <style>
+    :root {
+      --text-color: white;
+      --bg-color: #111;
+      --bot-bg-color: #222;
+      --user-bg-color: #333;
+      --message-height: 30%;
+      --button-border-color: #ccc;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-color);
+    }
+
+    .chat-container {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .chat-content {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .chat-message {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 5px;
+      color: var(--text-color);
+    }
+
+    .user-message {
+      text-align: right;
+      background-color: var(--user-bg-color);
+    }
+
+    .bot-message {
+      text-align: left;
+      background-color: var(--bot-bg-color);
+    }
+
+	@keyframes typing {
+  	0% {
+  	  opacity: 0.2;
+ 	   transform: translateY(0);
+ 	 }
+ 	 50% {
+ 	   opacity: 0.5;
+ 	   transform: translateY(-4px);
+    }
+  	  100% {
+  	  opacity: 0.2;
+  	  transform: translateY(0);
+  }
+}
+
+
+
+    .user-input-container {
+      width: 300px;
+      padding: 20px;
+      background-color: var(--user-bg-color);
+      display: flex;
+      flex-direction: column;
+    }
+
+    textarea {
+      width: 100%;
+      height: var(--message-height);
+      resize: none;
+      padding: 10px;
+      margin-top: 10px;
+      border: 1px solid var(--button-border-color);
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 15px;
+      color: var(--text-color);
+      background-color: var(--user-bg-color);
+    }
+
+    button {
+      padding: 10px;
+      margin-top: 10px;
+      background-color: var(--user-bg-color);
+      border: 1px solid var(--button-border-color);
+      color: var(--text-color);
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button[data-mode="light"] {
+      background-color: var(--bot-bg-color);
+      color: #fff;
+    }
+
+    #letter-count {
+      text-align: center;
+      color: var(--text-color);
+    }
+
+    body.light-mode {
+      --text-color: black;
+      --bg-color: #eee;
+      --bot-bg-color: #ddd;
+      --user-bg-color: #ccc;
+      --button-border-color: #666;
+    }
+
+    body.light-mode .user-input-container {
+      background-color: var(--user-bg-color);
+    }
+
+    body.light-mode textarea {
+      color: var(--text-color);
+      background-color: var(--user-bg-color);
+      border: 1px solid var(--button-border-color);
+    }
+
+    body.light-mode button {
+      background-color: var(--user-bg-color);
+      color: var(--text-color);
+      border: 1px solid var(--button-border-color);
+    }
+
+    body.light-mode button[data-mode="light"] {
+      background-color: var(--bot-bg-color);
+      color: #fff;
+    }
+  </style>
+</head>
+<body class="dark-mode">
+  <div class="chat-container">
+    <div class="chat-content" id="chat-content">
+    </div>
+    <div class="user-input-container">
+      <button onclick="clearChat()">Clear Chat</button>
+      <button onclick="saveChatData()">Save Chat</button>
+      <button onclick="loadChatData()">Load Chat</button>
+
+      <textarea id="user-input" placeholder="Type your message here..."></textarea>
+      <button id="submit-button" onclick="sendMessage()">Send</button>
+     <br>
+      <div id="letter-count"></div>
+      <br>
+    </div>
+  </div>
+
+</body>
+</html>
