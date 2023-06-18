@@ -14,3 +14,10 @@ We accept new submissions for AI Math Bots, requirements listed below.
 3. Can define words
 
 4. Can respond to generic math questions
+
+Limitations!
+
+Cannot Handle Variables
+Cannot handle Fully Worded Expressions
+Cannot Handle Sentence Problems
+Cannot Handle Visual Math Problems
