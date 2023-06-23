@@ -11,7 +11,6 @@ add: The process of combining two or more numbers to find their total.
 subtraction: The process of taking one number away from another.
 subtract: The process of taking one number away from another.
 remove: The process of taking one number away from another.
-kj+bre: Yes, Why you ask.
 because: Okay.
 multiplication: The process of repeated addition or counting in equal groups.
 multiply: The process of repeated addition or counting in equal groups.
