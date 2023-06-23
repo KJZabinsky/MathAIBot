@@ -270,7 +270,7 @@
         const result = evaluateEquation(message);
         return "Result: " + result;
       } else if (containsTerm(message, 'hello') || containsTerm(message, 'hi')) {
-        return "Hello!";
+        return "Hello! What can I help you with?";
       } else if (containsTerm(message, 'thanks') || containsTerm(message, 'thank you')) {
         return "You're welcome!";
       } else if (fetchDefinitionFromFile(message)) {
@@ -286,7 +286,7 @@
         return result;
       } catch (error) {
         console.error('Error evaluating equation:', error);
-        return "Invalid equation!";
+        return "Invalid equation! Cannot Detect Errors, Try Reloading.";
       }
     }
 
