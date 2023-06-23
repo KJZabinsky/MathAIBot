@@ -75,3 +75,4 @@ yard: A unit of measure that is equal to approximately 91.5 centimeters or 3 fee
 coeficient: a numerical or constant quantity placed before and multiplying the variable in an algebraic expression.
 cylinder: A three-dimensional shape featuring two circles bases connected by a curved tube.
 factor: A number that divides into another number exactly.
+help: What do you need help with? I can help with many math related questions.
